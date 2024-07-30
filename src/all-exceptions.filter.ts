@@ -7,10 +7,21 @@ import { Response, Request } from "express";
 import { error } from "console";
 import { PrismaErrorCode } from "utilities/globals";
 
+/**
+ * AllExceptionsFilter class.
+ * 
+ * This class is in charge of error handling in the application. it catches all the errors that were thrown during the runtime
+ * of the application and logs them using the logger. this class extends the base exception filter proveded by Nestjs.
+ */
 @Catch()
 export class AllExceptionsFilter extends BaseExceptionFilter {
     private readonly logger = new LoggerService(AllExceptionsFilter.name)
 
+    /**
+     * this function catches all the thrown exceptions. it logs the exception using the logger.
+     * @param exception - the exception that was thrown
+     * @param host - Provides methods for retrieving the arguments being passed to a handler.
+     */
     catch(exception: unknown, host: ArgumentsHost) {
         const context = host.switchToHttp();
         const response = context.getResponse<Response>();
@@ -23,7 +34,6 @@ export class AllExceptionsFilter extends BaseExceptionFilter {
             response: '',
         }
 
-        // Add more Prisma Error Types if you want
         if (exception instanceof BadRequestException){ 
             myResponseObj.statusCode = exception.getStatus();
             myResponseObj.response = exception.message;

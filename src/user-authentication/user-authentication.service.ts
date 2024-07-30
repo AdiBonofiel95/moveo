@@ -1,14 +1,17 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AuthenticationDetails, CognitoUser, CognitoUserPool } from 'amazon-cognito-identity-js';
 import { AuthenticationConfig } from './authentication.config';
 
-
+/**
+ * Authentication Service class.
+ * 
+ * This class is in charge of connecting and authenticating a user with the AWS Contigo user pool
+ */
 @Injectable()
 export class UserAuthenticationService {
     
     private userPool: CognitoUserPool;
     constructor(
-        // @Inject('AuthenticationConfig')
         private readonly AuthenticationConfig: AuthenticationConfig,
     ) {
         this.userPool = new CognitoUserPool({
