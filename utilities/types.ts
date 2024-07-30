@@ -1,3 +1,4 @@
+import { Project, Task } from "@prisma/client"
 
 
 export type ResponseObj = {
@@ -5,4 +6,10 @@ export type ResponseObj = {
     timestamp: string,
     path: string,
     response: string | object,
+}
+
+
+export type PageObj = {
+    page: number,
+    data: Task[] | Project[]
 }

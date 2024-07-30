@@ -1,19 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, Project } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { DefaultPage, DefaultPageLimit } from 'utilities/globals';
+import { PageObj } from 'utilities/types';
 
 @Injectable()
 export class ProjectService {
   constructor (private readonly databaseService: DatabaseService) {}
 
-  async create(createProjectDto: Prisma.ProjectCreateInput) {
+  async create(createProjectDto: Prisma.ProjectCreateInput): Promise<Project> {
     return this.databaseService.project.create({
       data: createProjectDto
     });
   }
 
-  async findAll(name?: string, page: number = DefaultPage, limit: number = DefaultPageLimit) {
+  async findAll(
+    name?: string, 
+    page: number = DefaultPage, 
+    limit: number = DefaultPageLimit
+  ): Promise <PageObj | Project> {
     if (name) {
       return this.databaseService.project.findUnique({
         where: {
@@ -33,7 +38,7 @@ export class ProjectService {
     };
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<Project> {
     return this.databaseService.project.findUnique({
       where: {
         id,
@@ -41,7 +46,7 @@ export class ProjectService {
     });
   }
 
-  async update(id: number, updateProjectDto: Prisma.ProjectUpdateInput) {
+  async update(id: number, updateProjectDto: Prisma.ProjectUpdateInput): Promise<Project> {
     return this.databaseService.project.update({
       where: {
         id,
@@ -50,7 +55,7 @@ export class ProjectService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<Project> {
     return this.databaseService.project.delete({
       where: {
         id,

@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ProjectService } from './project.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, Project } from '@prisma/client';
 import { LoggerService } from 'src/logger/logger.service';
 import { craftMessage } from 'utilities/functions';
 import { DefaultPage, DefaultPageLimit } from 'utilities/globals';
+import { PageObj } from 'utilities/types';
 
 @Controller('project')
 export class ProjectController {
@@ -11,13 +12,17 @@ export class ProjectController {
   private readonly logger = new LoggerService(ProjectController.name)
 
   @Post()
-  create(@Body() createProjectDto: Prisma.ProjectCreateInput) {
+  create(@Body() createProjectDto: Prisma.ProjectCreateInput): Promise<Project> {
     this.logger.log(craftMessage("create", "a new project."), ProjectController.name);
     return this.projectService.create(createProjectDto);
   }
   
   @Get()
-  findAll(@Query('name') name?: string, @Query('page') page?: string, @Query('limit') limit?: string) {
+  findAll(
+    @Query('name') name?: string, 
+    @Query('page') page?: string, 
+    @Query('limit') limit?: string
+  ): Promise<PageObj |Project> {
     name !== undefined ? this.logger.log(craftMessage("read", `project by name: ${name}`), ProjectController.name) : 
     this.logger.log(
       craftMessage("read", `all project records, page:${page ?? DefaultPage}, limit:${limit ?? DefaultPageLimit}.`), 
@@ -31,19 +36,19 @@ export class ProjectController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<Project> {
     this.logger.log(craftMessage("read", `project by id: ${id}.`), ProjectController.name);
     return this.projectService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: Prisma.ProjectUpdateInput) {
+  update(@Param('id') id: string, @Body() updateProjectDto: Prisma.ProjectUpdateInput): Promise<Project> {
     this.logger.log(craftMessage("update", `project by id: ${id}.`), ProjectController.name);
     return this.projectService.update(+id, updateProjectDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string): Promise<Project> {
     this.logger.log(craftMessage("delete", `project by id: ${id}.`), ProjectController.name);
     return this.projectService.remove(+id);
   }
